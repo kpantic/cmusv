@@ -60,7 +60,15 @@ class Deliverable < ActiveRecord::Base
     # Find everything where the passed in person is either the creator
     # or is on the deliverable's team
     past_teams = Team.find_past_by_person(person)
-    Deliverable.find_by_person_and_teams(person, past_teams)
+    deliverables = Deliverable.find_by_person_and_teams(person, past_teams)
+    current_year = Date.today.year()
+    current_semester = AcademicCalendar.current_semester()
+    deliverables.each do |d|
+      c = Course.find_by_id(d.course_id)
+      if c.semester = current_semester or c.year current_year
+        deliverables.delete(d)
+      end
+    end
   end
 
   def self.find_by_person_and_teams(person, teams)
